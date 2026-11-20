@@ -43,6 +43,8 @@ The appetite for this is well established. Projects like [graphify](https://gith
 | Zero backend, zero chart library | Only React and TypeScript at runtime; the graph and its glow effects are pure inline SVG plus CSS. |
 | Local persistence | Settings, parse history, and saved projects live in `localStorage` with a safe in-memory fallback. |
 
+**🔗 Live demo:** https://webxiongda.github.io/codegraph/
+
 ## Quick Start
 
 ```bash

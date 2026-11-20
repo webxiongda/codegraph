@@ -43,6 +43,8 @@
 | 零后端、零图表库 | 运行时只有 React 与 TypeScript；图谱与发光效果全部是内联 SVG 加原生 CSS。 |
 | 本地持久化 | 设置、解析历史与保存的项目存放于 `localStorage`，存储不可用时安全降级为内存状态。 |
 
+**🔗 在线预览：** https://webxiongda.github.io/codegraph/
+
 ## 快速开始
 
 ```bash
