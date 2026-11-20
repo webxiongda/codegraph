@@ -51,7 +51,7 @@ cd codegraph && npm install
 npm run dev
 ```
 
-Open the address printed in your terminal (by default `http://localhost:5173`). The built-in sample loads automatically — 11 files, 26 edges, and 3 circular dependencies — so there is a graph to explore before you paste a single line.
+Open the address printed in your terminal (by default `http://localhost:5173`). The built-in sample loads automatically — 11 files, 26 edges, and 3 circular dependencies — so there is a graph to explore before you paste a single line. Run the test suite with `npm test`.
 
 ## Pages
 
