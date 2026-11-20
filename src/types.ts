@@ -38,3 +38,28 @@ export interface GraphModel {
   cycles: string[][]
   parseErrors: ParseError[]
 }
+
+export interface GraphSettings {
+  nodeScale: number
+  showLabels: boolean
+  repulsion: number
+}
+
+export interface HistoryEntry {
+  id: string
+  label: string
+  at: number
+  files: number
+  edges: number
+  text: string
+}
+
+export interface SavedProject {
+  id: string
+  name: string
+  at: number
+  files: number
+  edges: number
+  cycles: number
+  text: string
+}

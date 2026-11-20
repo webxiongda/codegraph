@@ -170,3 +170,44 @@ export type LayoutMode = 'force' | 'radial'
 `,
   },
 ]
+
+export interface ProjectPreset {
+  id: string
+  name: string
+  description: string
+  tone: 'cyan' | 'purple' | 'green'
+  files: SourceFile[]
+}
+
+const pick = (paths: string[]): SourceFile[] => sampleFiles.filter((file) => paths.includes(file.path))
+
+/** 三个内置项目由同一份示例源码派生，规模不同但都能展示真实的解析结果 */
+export const projectPresets: ProjectPreset[] = [
+  {
+    id: 'full',
+    name: '全量示例项目',
+    description: '完整的迷你前端项目：11 个文件，含循环依赖、孤儿文件与多层目录。',
+    tone: 'cyan',
+    files: sampleFiles,
+  },
+  {
+    id: 'core',
+    name: '核心模块',
+    description: '去掉工具函数与主题配置，保留入口、界面、Hook 和类型定义。',
+    tone: 'purple',
+    files: sampleFiles.filter((file) => !file.path.startsWith('src/utils/') && !file.path.startsWith('src/styles/')),
+  },
+  {
+    id: 'lite',
+    name: '精简版',
+    description: '五个文件的最小可运行结构，适合第一次观察环是如何在组件间形成的。',
+    tone: 'green',
+    files: pick([
+      'src/main.tsx',
+      'src/App.tsx',
+      'src/components/Sidebar.tsx',
+      'src/components/Toolbar.tsx',
+      'src/types.ts',
+    ]),
+  },
+]

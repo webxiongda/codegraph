@@ -9,6 +9,10 @@ interface GraphCanvasProps {
   colorMode: 'dir' | 'kind'
   resetToken: number
   onSelect: (id: string | null) => void
+  nodeScale?: number
+  showLabels?: boolean
+  repulsion?: number
+  highlightIds?: Set<string> | null
 }
 
 interface Point {
@@ -18,13 +22,13 @@ interface Point {
   vy: number
 }
 
-const REPULSION = 14000
+const DEFAULT_REPULSION = 14000
 const SPRING = 0.013
 const REST_LENGTH = 236
 const DAMPING = 0.86
 const CENTER_PULL = 0.0011
 
-export function GraphCanvas({ model, focusIds, colorMode, resetToken, onSelect }: GraphCanvasProps) {
+export function GraphCanvas({ model, focusIds, colorMode, resetToken, onSelect, nodeScale = 1, showLabels = true, repulsion = DEFAULT_REPULSION, highlightIds = null }: GraphCanvasProps) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
   const pointsRef = useRef(new Map<string, Point>())
@@ -111,7 +115,7 @@ export function GraphCanvas({ model, focusIds, colorMode, resetToken, onSelect }
             distanceSq = dx * dx + dy * dy
           }
           const distance = Math.sqrt(distanceSq)
-          const force = REPULSION / Math.max(distanceSq, 400)
+          const force = repulsion / Math.max(distanceSq, 400)
           const fx = (dx / distance) * force
           const fy = (dy / distance) * force
           a.vx -= fx
@@ -161,7 +165,7 @@ export function GraphCanvas({ model, focusIds, colorMode, resetToken, onSelect }
     }
     frame = requestAnimationFrame(step)
     return () => cancelAnimationFrame(frame)
-  }, [model])
+  }, [model, repulsion])
 
   useEffect(() => {
     const svg = svgRef.current
@@ -263,7 +267,7 @@ export function GraphCanvas({ model, focusIds, colorMode, resetToken, onSelect }
     setTransform(next)
   }
 
-  const radiusOf = (node: GraphNode): number => Math.min(30, 12 + Math.sqrt(node.degree) * 5)
+  const radiusOf = (node: GraphNode): number => Math.min(30 * nodeScale, (12 + Math.sqrt(node.degree) * 5) * nodeScale)
 
   const nodeById = new Map(model.nodes.map((node) => [node.id, node]))
   const points = pointsRef.current
@@ -319,7 +323,8 @@ export function GraphCanvas({ model, focusIds, colorMode, resetToken, onSelect }
               const midX = (a.x + b.x) / 2 - uy * bend
               const midY = (a.y + b.y) / 2 + ux * bend
               const path = `M ${a.x + ux * startRadius} ${a.y + uy * startRadius} Q ${midX} ${midY} ${b.x - ux * endRadius} ${b.y - uy * endRadius}`
-              const dimmed = focusIds && !(focusIds.has(edge.source) && focusIds.has(edge.target))
+              const dimmed = (focusIds && !(focusIds.has(edge.source) && focusIds.has(edge.target)))
+                || (!!highlightIds && !(highlightIds.has(edge.source) && highlightIds.has(edge.target)))
               return (
                 <path
                   key={edge.id}
@@ -338,7 +343,8 @@ export function GraphCanvas({ model, focusIds, colorMode, resetToken, onSelect }
               if (!point) return null
               const radius = radiusOf(node)
               const color = colorMode === 'dir' ? dirColor(node.dir) : kindColor(node.kind)
-              const dimmed = !!focusIds && !focusIds.has(node.id)
+              const highlighted = !!highlightIds && highlightIds.has(node.id)
+              const dimmed = (!!focusIds && !focusIds.has(node.id)) || (!!highlightIds && !highlighted)
               const selected = node.id === hover
               return (
                 <g
@@ -362,9 +368,14 @@ export function GraphCanvas({ model, focusIds, colorMode, resetToken, onSelect }
                     className="graph-node-core"
                   />
                   <circle r={Math.max(3.5, radius * 0.3)} fill={color} />
-                  <text y={radius + 17} textAnchor="middle" className="graph-node-label">
-                    {node.label}
-                  </text>
+                  {highlighted && (
+                    <circle r={radius + 8} fill="none" stroke="#a5f3fc" strokeWidth={1.6} strokeDasharray="4 4" opacity={0.95} />
+                  )}
+                  {showLabels && (
+                    <text y={radius + 17} textAnchor="middle" className="graph-node-label">
+                      {node.label}
+                    </text>
+                  )}
                 </g>
               )
             })}

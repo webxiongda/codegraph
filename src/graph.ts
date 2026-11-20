@@ -90,3 +90,40 @@ export function kindColor(kind: FileKind): string {
     default: return '#64748b'
   }
 }
+
+export function maxDegree(nodes: GraphNode[]): number {
+  return nodes.reduce((peak, node) => Math.max(peak, node.degree), 0)
+}
+
+/** 忽略方向统计连通分量，返回按规模降序排列的文件路径分组 */
+export function connectedComponents(model: GraphModel): string[][] {
+  const parent = new Map<string, string>()
+  for (const node of model.nodes) parent.set(node.id, node.id)
+
+  const find = (id: string): string => {
+    let root = id
+    while (parent.get(root) !== root) root = parent.get(root) ?? root
+    let cursor = id
+    while (parent.get(cursor) !== root) {
+      const next = parent.get(cursor) ?? root
+      parent.set(cursor, root)
+      cursor = next
+    }
+    return root
+  }
+
+  for (const edge of model.edges) {
+    const a = find(edge.source)
+    const b = find(edge.target)
+    if (a !== b) parent.set(a, b)
+  }
+
+  const groups = new Map<string, string[]>()
+  for (const node of model.nodes) {
+    const root = find(node.id)
+    const group = groups.get(root) ?? []
+    group.push(node.id)
+    groups.set(root, group)
+  }
+  return [...groups.values()].sort((a, b) => b.length - a.length || a[0].localeCompare(b[0]))
+}
