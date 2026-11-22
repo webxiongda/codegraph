@@ -2,7 +2,9 @@
 
 [English](README.md) | [中文](README-zh.md)
 
-# 🕸️ CodeGraph
+# 🕸️ CodeGraph — TypeScript / JavaScript 依赖图谱
+
+▶ **[在线体验](https://webxiongda.github.io/codegraph/)** — 无需安装，直接在浏览器里运行。
 
 **把任意 TypeScript 或 JavaScript 代码库变成一张可交互的依赖图谱 —— 就在你的浏览器里。**
 

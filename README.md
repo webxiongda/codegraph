@@ -2,7 +2,9 @@
 
 [English](README.md) | [中文](README-zh.md)
 
-# 🕸️ CodeGraph
+# 🕸️ CodeGraph — TypeScript / JavaScript Dependency Graph
+
+▶ **[Try it live](https://webxiongda.github.io/codegraph/)** — no install, runs in your browser.
 
 **Turn any TypeScript or JavaScript codebase into an interactive dependency graph — right in your browser.**
 
